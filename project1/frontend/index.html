@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Library</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include Axios library for making HTTP requests -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.container {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 10px 4px rgba(0, 0, 0, 0.1);
+    max-width: 1300px; /* Adjusted container width */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+select,
+input[type="file"],
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #b99ab3;
+    
+}
+
+
+#gret {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+#uimage {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+/* Table styles */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px; /* Adjusted margin top */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.action-buttons button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.action-buttons button:hover {
+    background-color: #45a049;
+}
+h1#title {
+font-size: 36px;
+margin: 0;
+text-transform: uppercase;
+letter-spacing: 2px;
+background-color: #45a049;
+color: white;
+}
+#book_d {
+background-color:#77cd7c;
+}
+</style>
+<body>
+    <!-- Header with navigation -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Bina's Library</a></li>
+                <!-- Add more navigation links as needed -->
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main content container -->
+    <div class="container">
+        <!-- User login and registration form -->
+        <h1 id="title">Bina's Library</h1>
+        <h2>Login/Sign Up</h2>
+        <div class="form-group">
+            <label for="username">User:</label>
+            <input type="text" id="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password">
+        </div>
+        <div class="form-group">
+            <label for="role">Role Type:</label>
+            <select id="role">
+                <option value="0">User (Cannot Add a Book)</option>
+                <option value="1" selected>Manager</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fileInput">User Image:</label>
+            <input type="file" id="fileInput">
+        </div>
+        <div class="form-group">
+            <button onclick="login()">Login</button>
+            <button onclick="logout()">Logout</button>
+            <button onclick="register()">Register</button>
+        </div>
+        <!-- Container to display user greeting and image -->
+        <div id="gret"></div>
+        <div id="uimage"></div>
+       
+        <div id="usersContainer" class="container">
+
+        <!-- Section for managing books -->
+        <h1 id = "book_d">Book Details</h1>
+        <div class="form-group">
+            <label for="book_name">Name:</label>
+            <input type="text" id="book_name">
+        </div>
+        <div class="form-group">
+            <label for="riter">Writer:</label>
+            <input type="text" id="riter">
+        </div>
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <input type="text" id="type">
+        </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date">
+        </div>
+        <div class="form-group">
+            <label for="fileInputBook">Book Image:</label>
+            <input type="file" id="fileInputBook">
+        </div>
+        <div class="form-group">
+            <button onclick="addBook()">Add a Book</button>
+            <button onclick="getBooks()">Fetch Books</button>
+            <button onclick="getUsers()">Fetch Users</button>
+        </div>
+    </div>
+
+    <!-- Container to display books -->
+    <div id="booksContainer" class="container">
+        <h2 id = "book_d">Book List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Name</th>
+                    <th>Writer</th>
+                    <th>Publish Date</th>
+                    <th>pic</th>
+                    <th>Lend Out?</th>
+                    <th>Return Time</th>
+                    <th>Lend By</th>
+                    <th>Return at</th>
+                    <th>lend?</th>
+                    <th>return?</th>
+                    <th>delete</th>
+                    <th>update</th>
+                </tr>
+            </thead>
+            <tbody id="booksTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+    <!-- Container to display users -->
+    <div id="usersContainer" class="container">
+        <h2 id = "book_d">User List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+        </table>
+    </div>
+</body>
+</html>
+
+
+    <!-- JavaScript section for handling user interactions -->
+    <script>
+        // Define the URL of your server
+        const MY_SERVER = "http://127.0.0.1:5000"
+
+        // Function to add a book
+        // This function sends a POST request to the server to add a new book
+        const addBook = async () => {
+    // Get book details from input fields
+    const bookName = document.getElementById("book_name").value;
+    const riter = document.getElementById("riter").value;
+    const date = document.getElementById("date").value;
+    const type = document.getElementById("type").value
+    const fileInput = document.getElementById("fileInputBook").files[0];
+
+    // Retrieve the access token from session storage
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+        // Create a FormData object to send the file along with other data
+        const formData = new FormData();
+        formData.append('book_name', bookName);
+        formData.append('riter', riter);
+        formData.append('date', date);
+        formData.append('file', fileInput);
+        formData.append('type', type);
+
+        // Send a POST request to the server to add the book
+        const response = await axios.post(
+            `${MY_SERVER}/addbook`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data', // Set Content-Type header for FormData
+                },
+            }
+        );
+
+        // Optionally, handle the response as needed
+        console.log(response.data);
+    } catch (error) {
+        // Handle errors
+        console.error("Error adding book:", error.response ? error.response.data : error.message);
+    }
+};
+
+
+        // Function to fetch all books
+        // This function sends a GET request to the server to fetch all books
+        const getBooks = async () => {
+            try {
+                // Retrieve the access token from session storage
+                const token = sessionStorage.getItem("access_token");
+                // Send a GET request to the server to fetch all books
+                const response = await axios.get(`${MY_SERVER}/getbooks`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                // Retrieve the list of books from the server response
+                const booksList = response.data.books;
+                // Update the books table in the UI with the fetched books
+                updateBooksTable(booksList);
+
+            } catch (error) {
+                console.error("Error fetching books:", error.response ? error.response.data : error.message);
+                // Handle the error accordingly
+            }
+        };
+        const deleteBook = async (bookId) => {
+        
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+        const response = await axios.delete(`${MY_SERVER}/deletebook/${bookId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        console.log(response.data);
+        // Refresh the books list after deletion
+        getBooks();
+    } catch (error) {
+        console.error("Error deleting book:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly
+    }
+};
+
+const updateUserInfo = async (userId) => {
+    
+    // Retrieve updated user details from the user
+    const updatedUsername = prompt("Enter updated username:");
+    //  const updatedPassword = prompt("Enter updated password:"); // Prompt the user to enter the new password
+    const updatedRole = prompt("Enter updated role:");
+
+    // Prepare the updated user object
+    const updatedUser = {
+        username: updatedUsername,
+        // password: updatedPassword, // Include the new password in the updated user object
+        role: updatedRole
+    };
+
+    try {
+        const token = sessionStorage.getItem("access_token");
+
+        // Make a PUT request to the backend API to update the user
+        const response = await axios.put(`${MY_SERVER}/updateuser/${userId}`, updatedUser, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        console.log(response.data);
+        // Optionally, update the UI or display a success message
+    } catch (error) {
+        console.error("Error updating user:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly (e.g., show an error message)
+    }
+};
+
+
+const updateBook = async (bookId) => {
+    // Prompt the user to enter updated book details
+    const updatedName = prompt("Enter updated book name:");
+    const updatedRiter = prompt("Enter updated writer:");
+    const updatedDate = prompt("Enter updated date:");
+    const updateType = prompt("enter updated type:")
+
+    // Retrieve the access token from session storage
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+        // Send a PUT request to the backend API to update the book
+        const response = await axios.put(
+            `${MY_SERVER}/updatebook/${bookId}`,
+            {
+                name: updatedName,
+                riter: updatedRiter,
+                date: updatedDate,
+                type: updateType
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json' // Set Content-Type header
+                }
+            }
+        );
+
+        console.log(response.data);
+        // Refresh the books list after updating
+        getBooks();
+    } catch (error) {
+        console.error("Error updating book:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly
+    }
+};
+
+
+
+const updateBooksTable = async (booksList) => {
+    const booksTableBody = document.getElementById("booksTableBody");
+
+    // Clear the existing content
+    booksTableBody.innerHTML = "";
+
+    // Create and append new rows for each book
+    for (const book of booksList) {
+        const row = booksTableBody.insertRow();
+
+        // Add cells for book properties
+        const bookNameCell = row.insertCell(0);
+        bookNameCell.textContent = book.book_name;
+
+        const writerCell = row.insertCell(1);
+        writerCell.textContent = book.riter;
+
+        const dateCell = row.insertCell(2);
+        dateCell.textContent = book.date;
+
+        const imageCell = row.insertCell(3);
+        const image = document.createElement("img");
+        image.src = book.img_url;
+        image.alt = "Book Image";
+        image.className = "book-image"; // Add class for styling
+        imageCell.appendChild(image);
+
+        const lendStatusCell = row.insertCell(4);
+        lendStatusCell.textContent = book.lend ? 'Lent' : 'Not Lent';
+
+        const whenCell = row.insertCell(5);
+        if (book.type === 1) {
+            whenCell.textContent = "10 days";
+        } else if (book.type === 2) {
+            whenCell.textContent = "5 days";
+        } else if (book.type === 3) {
+            whenCell.textContent = "2 days";
+        } else {
+            whenCell.textContent = "Unknown"; // Display default text for unknown book types
+        }
+
+        // Add cell for lender name
+        const lenderCell = row.insertCell(6);
+        lenderCell.textContent = book.lender; // Display lender name directly
+
+        // Add cell for return date
+        const returnDateCell = row.insertCell(7);
+        returnDateCell.textContent = book.return_date || '-'; // Display return date or '-' if not lent
+        if (book.return_date < book.currenttime) {
+            returnDateCell.textContent += " - late";
+        }
+
+        // Add cell for lending button
+        const lendButtonCell = row.insertCell(8);
+        const lendButton = document.createElement("button");
+        lendButton.textContent = "Lend";
+        lendButton.className = "btn btn-lend"; // Add class for styling
+        lendButton.onclick = async () => {
+            await lendBook(book.book_id);
+            getBooks();
+        };
+        lendButton.disabled = book.lend; // Disable button if book is already lent
+        lendButtonCell.appendChild(lendButton);
+
+        // Add cell for returning button
+        const returnButtonCell = row.insertCell(9);
+        const returnButton = document.createElement("button");
+        returnButton.textContent = "Return";
+        returnButton.className = "btn btn-return"; // Add class for styling
+        returnButton.onclick = async () => {
+            await returnBook(book.book_id);
+            getBooks();
+        };
+        returnButton.disabled = !book.lend; // Disable button if book is not lent
+        returnButtonCell.appendChild(returnButton);
+
+        // Add cell for delete button
+        const deleteButtonCell = row.insertCell(10);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "btn btn-delete"; // Add class for styling
+        deleteButton.onclick = async () => {
+            await deleteBook(book.book_id);
+            getBooks();
+        };
+        deleteButtonCell.appendChild(deleteButton);
+
+        // Add cell for update button
+        const updateButtonCell = row.insertCell(11);
+        const updateButton = document.createElement("button");
+        updateButton.textContent = "Update";
+        updateButton.className = "btn btn-update"; // Add class for styling
+        updateButton.onclick = async () => {
+            await updateBook(book.book_id);
+            getBooks();
+        };
+        updateButtonCell.appendChild(updateButton);
+    }
+};
+
+
+
+
+
+const lendBook = async (bookId) => {
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+        const response = await axios.post(
+            `${MY_SERVER}/lendbook`,
+            { book_id: bookId },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        console.log(response.data);
+        // Handle the response as needed (e.g., show a success message, update UI, etc.)
+        // You might want to refresh the books list or update the specific book's status in the UI.
+
+    } catch (error) {
+        console.error("Error lending book:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly (e.g., show an error message)
+    }
+};
+const returnBook = async (bookId) => {
+    const token = sessionStorage.getItem("access_token");
+
+    try {
+        const response = await axios.post(
+            `${MY_SERVER}/returnbook/${bookId}`,
+            null,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        console.log(response.data);
+        // Handle the response as needed (e.g., show a success message, update UI, etc.)
+        // You might want to refresh the books list or update the specific book's status in the UI.
+
+    } catch (error) {
+        console.error("Error returning book:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly (e.g., show an error message)
+    }
+};
+
+
+        // Function to fetch users from the server
+const getUsers = async () => {
+    try {
+        // Retrieve the access token from session storage
+        const token = sessionStorage.getItem("access_token");
+        // Send a GET request to the server to fetch users
+        const response = await axios.get(`${MY_SERVER}/getusers`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        // Extract the list of users from the server response
+        const usersList = response.data.users;
+        // Update the users table in the UI with the fetched users
+        updateUsersTable(usersList);
+
+    } catch (error) {
+        console.error("Error fetching users:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly
+    }
+};
+
+// Function to update the users table in the UI
+const updateUsersTable = (usersList) => {
+    const usersTableBody = document.getElementById("usersTableBody");
+
+    // Clear the existing content of the users table
+    usersTableBody.innerHTML = "";
+
+    // Iterate over the list of users and add each user to the table
+    usersList.forEach(user => {
+        const row = usersTableBody.insertRow();
+
+        // Add cells for each property of the user
+        const usernameCell = row.insertCell(0);
+        usernameCell.textContent = user.username;
+
+        const passwordCell = row.insertCell(1);
+        passwordCell.textContent = user.password; // Note: You might want to hide or mask the password for security reasons
+
+        const roleCell = row.insertCell(2);
+        roleCell.textContent = user.role;
+
+      
+        // Add buttons for delete and update actions
+        const actionsCell = row.insertCell(3);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = () => deleteUser(user.id); // Call deleteUser function with user ID
+        actionsCell.appendChild(deleteButton);
+
+        const updateButton = document.createElement("button");
+        updateButton.textContent = "Update";
+        updateButton.onclick = () => updateUserInfo(user.id); // Call updateUser function with user ID
+        actionsCell.appendChild(updateButton);
+       
+    });
+};
+// Function to delete a user
+const deleteUser = async (userId) => {
+    
+    try {
+        // Retrieve the access token from session storage
+        const token = sessionStorage.getItem("access_token");
+        // Send a DELETE request to the server to delete the user with the specified ID
+        const response = await axios.delete(`${MY_SERVER}/deleteuser/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        // Log the server response message
+        console.log(response.data.message);
+        // Refresh the user list after deletion
+        getUsers();
+    } catch (error) {
+        console.error("Error deleting user:", error.response ? error.response.data : error.message);
+        // Handle the error accordingly
+    }
+};
+
+
+        // Other functions for deleting books, lending books, etc. go here...
+
+        // Function to handle user login
+        const login = async () => {
+            try {
+                // Send a POST request to the server with user credentials
+                const response = await axios.post(`${MY_SERVER}/login`, { 
+                    username: document.getElementById("username").value, 
+                    password: document.getElementById("password").value 
+                });
+                // Update UI with user information
+                document.getElementById("uimage").innerHTML = `<img src=${response.data.image_url}>`;
+                document.getElementById("gret").innerHTML = "<h1>Welcome, " + response.data.username + "</h1>";
+                // Store access token in session storage
+                sessionStorage.setItem("access_token", response.data.access_token);
+            } catch (error) {
+                console.error("wrong password / username");
+            }
+        };
+
+        // Function to handle user logout
+        const logout = () => {
+            // Clear access token from session storage
+            sessionStorage.setItem("access_token", "");
+        };
+
+        // Function to handle user registration
+        const register = async () => {
+            try {
+                // Prepare form data including username, password, role, and image
+                const formData = new FormData();
+                formData.append('file', document.getElementById('fileInput').files[0]);
+                formData.append('username', document.getElementById('username').value);
+                formData.append('password', document.getElementById('password').value);
+                formData.append('role', document.getElementById('role').value);
+
+                // Send a POST request to the server for user registration
+                const response = await axios.post(`${MY_SERVER}/register`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                // Store access token in session storage after successful registration
+                sessionStorage.setItem("access_token", response.data.access_token);
+            } catch (error) {
+                console.error('Error during registration:', error);
+            }
+            
+        };
+    </script>
+</body>
+</html>
